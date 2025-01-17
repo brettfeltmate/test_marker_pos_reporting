@@ -81,7 +81,6 @@ class test_marker_pos_reporting(klibs.Experiment):
 
         os.mkdir(f"OptiData/{P.p_id}")
 
-
     def block(self):
         pass
 
@@ -123,9 +122,9 @@ class test_marker_pos_reporting(klibs.Experiment):
 
         while do_loop:
             self.present_stimuli()
-            
+
             q = pump(True)
-            if key_pressed("spacebar", queue = q):
+            if key_pressed(key="space", queue=q):
                 do_loop = False
 
         self.nnc.shutdown()
@@ -151,26 +150,26 @@ class test_marker_pos_reporting(klibs.Experiment):
 
         xy_cursor = [cursor_pos["pos_x"][0].item(), cursor_pos["pos_z"][0].item()]
         message(
-            text = f"X: {xy_cursor[0]:.2f}\nY: {xy_cursor[1]:.2f}",
+            text=f"X: {xy_cursor[0]:.2f}\nY: {xy_cursor[1]:.2f}",
             registration=2,
             location=(xy_cursor[0] - P.ppi, xy_cursor[1]),
-            blit_txt = True
+            blit_txt=True,
         )
 
         xy_distractor = self.locs[self.distractor_loc]
         message(
-            text = f"X: {xy_distractor[0]:.2f}\nY: {xy_distractor[1]:.2f}",
+            text=f"X: {xy_distractor[0]:.2f}\nY: {xy_distractor[1]:.2f}",
             registration=5,
             location=self.locs[self.distractor_loc],
-            blit_txt = True
+            blit_txt=True,
         )
 
         xy_target = self.locs[self.target_loc]
         message(
-            text = f"X: {xy_target[0]:.2f}\nY: {xy_target[1]:.2f}",
+            text=f"X: {xy_target[0]:.2f}\nY: {xy_target[1]:.2f}",
             registration=5,
             location=self.locs[self.target_loc],
-            blit_txt = True
+            blit_txt=True,
         )
 
         blit(self.cursor, registration=5, location=xy_cursor)
