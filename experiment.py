@@ -153,7 +153,7 @@ class test_marker_pos_reporting(klibs.Experiment):
 
         cursor_pos = self.ot.position()
 
-        xy_cursor = [cursor_pos["pos_x"][0].item(), cursor_pos["pos_z"][0].item()]
+        xy_cursor = [-cursor_pos["pos_x"][0].item(), -cursor_pos["pos_z"][0].item()]
         message(
             text=f"X: {xy_cursor[0]:.2f}\nY: {xy_cursor[1]:.2f}",
             registration=2,
