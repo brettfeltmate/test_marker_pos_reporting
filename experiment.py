@@ -13,7 +13,7 @@ from klibs.KLGraphics import KLDraw as kld
 from klibs.KLGraphics import blit, fill, flip
 from klibs.KLBoundary import CircleBoundary, BoundarySet
 from klibs.KLTime import CountDown
-from klibs.KLUserInterface import ui_request, key_pressed
+from klibs.KLUserInterface import ui_request
 from klibs.KLUtilities import pump
 from klibs.KLAudio import Tone
 
@@ -37,11 +37,11 @@ class test_marker_pos_reporting(klibs.Experiment):
     def setup(self):
 
         # sizings
-        PX_PER_CM = int(P.ppi / 2.54)
-        DIAM_SMALL = 5 * PX_PER_CM
-        DIAM_LARGE = 9 * PX_PER_CM
-        BRIMWIDTH = 1 * PX_PER_CM
-        POS_OFFSET = 10 * PX_PER_CM
+        self.px_cm = int(P.ppi / 2.54)
+        DIAM_SMALL = 5 * self.px_cm
+        DIAM_LARGE = 9 * self.px_cm
+        BRIMWIDTH = 1 * self.px_cm
+        POS_OFFSET = 10 * self.px_cm
         # setup optitracker
         self.ot = OptiTracker(marker_count=10, sample_rate=120, window_size=5)
 
@@ -74,7 +74,7 @@ class test_marker_pos_reporting(klibs.Experiment):
         }
 
         self.cursor = kld.Annulus(
-            diameter=PX_PER_CM, thickness=PX_PER_CM * 0.2, fill=RED
+            diameter=self.px_cm, thickness=self.px_cm * 0.2, fill=RED
         )
 
         if not os.path.exists("OptiData"):
@@ -130,7 +130,6 @@ class test_marker_pos_reporting(klibs.Experiment):
 
             self.present_stimuli()
 
-
         self.nnc.shutdown()
 
         return {"block_num": P.block_number, "trial_num": P.trial_number}
@@ -144,7 +143,6 @@ class test_marker_pos_reporting(klibs.Experiment):
     def present_stimuli(self):
         fill()
 
-
         distractor_holder = self.placeholders[DISTRACTOR][self.distractor_size]  # type: ignore[attr-defined]
         distractor_holder.fill = GRUE
 
@@ -153,7 +151,11 @@ class test_marker_pos_reporting(klibs.Experiment):
 
         cursor_pos = self.ot.position()
 
-        xy_cursor = [cursor_pos["pos_x"][0].item(), cursor_pos["pos_z"][0].item()]
+        xy_cursor = [
+            cursor_pos["pos_x"][0].item() / self.px_cm,
+            cursor_pos["pos_z"][0].item() / self.px_cm,
+        ]
+
         message(
             text=f"X: {xy_cursor[0]:.2f}\nY: {xy_cursor[1]:.2f}",
             registration=2,
@@ -178,7 +180,6 @@ class test_marker_pos_reporting(klibs.Experiment):
             blit_txt=True,
         )
 
-
         blit(
             distractor_holder,
             registration=5,
@@ -191,7 +192,7 @@ class test_marker_pos_reporting(klibs.Experiment):
 
         flip()
 
-        if self.bounds.within_boundary("target", p = xy_cursor):
+        if self.bounds.within_boundary("target", p=xy_cursor):
             self.Tone.play()
 
     def marker_set_listener(self, marker_set: dict) -> None:
