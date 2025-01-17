@@ -118,14 +118,16 @@ class test_marker_pos_reporting(klibs.Experiment):
 
     def trial(self):  # type: ignore[override]
 
-        do_loop = True
+        # do_loop = True
 
-        while do_loop:
+        trial_durr = CountDown(5)
+
+        while trial_durr.counting():
+            q = pump(True)
+            ui_request(queue=q)
+
             self.present_stimuli()
 
-            q = pump(True)
-            if key_pressed(key="space", queue=q):
-                do_loop = False
 
         self.nnc.shutdown()
 
@@ -157,6 +159,7 @@ class test_marker_pos_reporting(klibs.Experiment):
         )
 
         xy_distractor = self.locs[self.distractor_loc]
+
         message(
             text=f"X: {xy_distractor[0]:.2f}\nY: {xy_distractor[1]:.2f}",
             registration=5,
@@ -172,7 +175,6 @@ class test_marker_pos_reporting(klibs.Experiment):
             blit_txt=True,
         )
 
-        blit(self.cursor, registration=5, location=xy_cursor)
 
         blit(
             distractor_holder,
@@ -181,6 +183,8 @@ class test_marker_pos_reporting(klibs.Experiment):
         )
 
         blit(target_holder, registration=5, location=self.locs[self.target_loc])
+
+        blit(self.cursor, registration=5, location=xy_cursor)
 
         flip()
 
