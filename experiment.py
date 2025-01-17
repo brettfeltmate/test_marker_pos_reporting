@@ -15,6 +15,7 @@ from klibs.KLBoundary import CircleBoundary, BoundarySet
 from klibs.KLTime import CountDown
 from klibs.KLUserInterface import ui_request, key_pressed
 from klibs.KLUtilities import pump
+from klibs.KLAudio import Tone
 
 from natnetclient_rough import NatNetClient  # type: ignore[import]
 from OptiTracker import OptiTracker  # type: ignore[import]
@@ -117,6 +118,7 @@ class test_marker_pos_reporting(klibs.Experiment):
             _ = ui_request()
 
     def trial(self):  # type: ignore[override]
+        self.Tone = Tone(50)
 
         # do_loop = True
 
@@ -141,6 +143,7 @@ class test_marker_pos_reporting(klibs.Experiment):
 
     def present_stimuli(self):
         fill()
+
 
         distractor_holder = self.placeholders[DISTRACTOR][self.distractor_size]  # type: ignore[attr-defined]
         distractor_holder.fill = GRUE
@@ -187,6 +190,9 @@ class test_marker_pos_reporting(klibs.Experiment):
         blit(self.cursor, registration=5, location=xy_cursor)
 
         flip()
+
+        if self.bounds.within_boundary("target", p = xy_cursor):
+            self.Tone.play()
 
     def marker_set_listener(self, marker_set: dict) -> None:
         """Write marker set data to CSV file.
